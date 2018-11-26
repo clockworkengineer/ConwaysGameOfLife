@@ -53,13 +53,46 @@ int activeCellNeighbours(CELL *cellGrid, int y, int x) {
     
 }
 
+void patternGlider(CELL *cellGrid, int y, int x) {
+    
+    cellGrid[cellIndex(y,x)] = CELL_ALIVE;
+    cellGrid[cellIndex(y,x+2)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+1,x+1)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+1,x+2)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+2,x+1)] = CELL_ALIVE;
+
+}
+
+void patternSpaceShip(CELL *cellGrid, int y, int x) {
+    
+    cellGrid[cellIndex(y,x+1)] = CELL_ALIVE;
+    cellGrid[cellIndex(y,x+2)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+1,x)] = CELL_ALIVE;   
+    cellGrid[cellIndex(y+1,x+1)] = CELL_ALIVE;  
+    cellGrid[cellIndex(y+1,x+2)] = CELL_ALIVE;  
+    cellGrid[cellIndex(y+1,x+3)] = CELL_ALIVE;  
+    cellGrid[cellIndex(y+2,x)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+2,x+1)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+2,x+3)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+2,x+4)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+3,x+2)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+3,x+3)] = CELL_ALIVE;
+       
+}
+
+void patternToad(CELL *cellGrid, int y, int x) {
+    
+    cellGrid[cellIndex(y,x+1)] = CELL_ALIVE;
+    cellGrid[cellIndex(y,x+2)] = CELL_ALIVE;
+    cellGrid[cellIndex(y,x+3)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+1,x)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+1,x+1)] = CELL_ALIVE;
+    cellGrid[cellIndex(y+1,x+2)] = CELL_ALIVE;
+}
+
 void initCellGrid(CELL *cellGrid) {
 
-     cellGrid[cellIndex(9,8)] = CELL_ALIVE;       /* Glider */
-     cellGrid[cellIndex(9,10)] = CELL_ALIVE;
-     cellGrid[cellIndex(10,9)] = CELL_ALIVE;
-     cellGrid[cellIndex(10,10)] = CELL_ALIVE;
-     cellGrid[cellIndex(11,9)] = CELL_ALIVE;
+    patternSpaceShip(cellGrid, 3, 2);
 
 }
 
