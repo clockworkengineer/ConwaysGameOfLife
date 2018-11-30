@@ -5,49 +5,82 @@
  * Created on 25 November 2018, 10:55
  */
 
-#include <stdio.h>
-#include <unistd.h>
+#include <thread>
+#include <chrono>
+//#include <unistd.h>
+#include <ncurses.h>
 
 #include "CLife.hpp"
 
-#define GRID_HEIGHT 20
-#define GRID_WIDTH  20
+class CCursesLife : public CLife {
+public:
+    explicit CCursesLife(WINDOW *cellGridWindow, int cellGridHeight, int cellGridWidth);
+    virtual ~CCursesLife();
+
+    virtual void updateCell(int y, int x, bool active) {
+        char cell = active ? '*' : ' ';
+        mvwprintw(m_cellGridWindow, y + 1, x + 1, "%c", cell);
+    }
+
+    virtual void refresh() {
+
+        if (m_cellGridWindow) {
+            wrefresh(m_cellGridWindow);
+        }
+
+    }
+
+    CCursesLife(const CLife& orig) = delete;
+    CCursesLife(const CLife && orig) = delete;
+    CCursesLife& operator=(CLife other) = delete;
+
+    WINDOW *m_cellGridWindow{nullptr};
+
+};
+
+CCursesLife::CCursesLife(WINDOW *cellGridWindow, int cellGridHeight, int cellGridWidth) : CLife(cellGridHeight, cellGridWidth), m_cellGridWindow(cellGridWindow) {
+
+}
+
+CCursesLife::~CCursesLife() {
+
+}
 
 void patternGlider(CLife *cellGrid, int y, int x) {
-    
-    cellGrid->setCell(y,x,true);
-    cellGrid->setCell(y,x+2,true);
-    cellGrid->setCell(y+1,x+1,true);
-    cellGrid->setCell(y+1,x+2,true);
-    cellGrid->setCell(y+2,x+1,true);
+
+    cellGrid->setCell(y, x, true);
+    cellGrid->setCell(y, x + 2, true);
+    cellGrid->setCell(y + 1, x + 1, true);
+    cellGrid->setCell(y + 1, x + 2, true);
+    cellGrid->setCell(y + 2, x + 1, true);
 
 }
 
 void patternSpaceShip(CLife *cellGrid, int y, int x) {
-    
-    cellGrid->setCell(y,x+1,true);
-    cellGrid->setCell(y,x+2,true);
-    cellGrid->setCell(y+1,x,true);   
-    cellGrid->setCell(y+1,x+1,true);  
-    cellGrid->setCell(y+1,x+2,true);  
-    cellGrid->setCell(y+1,x+3,true);  
-    cellGrid->setCell(y+2,x,true);
-    cellGrid->setCell(y+2,x+1,true);
-    cellGrid->setCell(y+2,x+3,true);
-    cellGrid->setCell(y+2,x+4,true);
-    cellGrid->setCell(y+3,x+2,true);
-    cellGrid->setCell(y+3,x+3,true);
-       
+
+    cellGrid->setCell(y, x + 1, true);
+    cellGrid->setCell(y, x + 2, true);
+    cellGrid->setCell(y + 1, x, true);
+    cellGrid->setCell(y + 1, x + 1, true);
+    cellGrid->setCell(y + 1, x + 2, true);
+    cellGrid->setCell(y + 1, x + 3, true);
+    cellGrid->setCell(y + 2, x, true);
+    cellGrid->setCell(y + 2, x + 1, true);
+    cellGrid->setCell(y + 2, x + 3, true);
+    cellGrid->setCell(y + 2, x + 4, true);
+    cellGrid->setCell(y + 3, x + 2, true);
+    cellGrid->setCell(y + 3, x + 3, true);
+
 }
 
 void patternToad(CLife *cellGrid, int y, int x) {
-    
-    cellGrid->setCell(y,x+1,true);
-    cellGrid->setCell(y,x+2,true);
-    cellGrid->setCell(y,x+3,true);
-    cellGrid->setCell(y+1,x,true);
-    cellGrid->setCell(y+1,x+1,true);
-    cellGrid->setCell(y+1,x+2,true);
+
+    cellGrid->setCell(y, x + 1, true);
+    cellGrid->setCell(y, x + 2, true);
+    cellGrid->setCell(y, x + 3, true);
+    cellGrid->setCell(y + 1, x, true);
+    cellGrid->setCell(y + 1, x + 1, true);
+    cellGrid->setCell(y + 1, x + 2, true);
 }
 
 void initCellGrid(CLife *cellGrid) {
@@ -56,40 +89,41 @@ void initCellGrid(CLife *cellGrid) {
 
 }
 
-void displayCellGrid(CLife *cellGrid, int iteration) {
-    
-    printf("Iteration %d\n\n", iteration);
-       
-    for (int y = 0; y < cellGrid->getCellGridHeight(); y++) {
-        for (int x = 0; x < cellGrid->getCellGridWidth(); x++) {
-            char cell = cellGrid->getCell(y, x) ? '*' : '_';
-            printf("%c", cell);
-        }
-        printf("\n");
-    }
-    printf("\n");
-    
-}
-
 /*
  * 
  */
 int main(int argc, char** argv) {
-   
-    CLife cellGrid { GRID_HEIGHT, GRID_WIDTH};
-    
+
+    WINDOW *cellGridWindow;
     int iteration = 0;
+    int gridHeight, gridWidth;
     
+    initscr();
+
+    getmaxyx(stdscr, gridHeight, gridWidth);
+    gridHeight -= 1;
+
+    cellGridWindow = newwin(gridHeight, gridWidth, 1, 0);
+
+    box(cellGridWindow, 0, 0);
+    curs_set(0);
+
+    CCursesLife cellGrid{ cellGridWindow, gridHeight - 2, gridWidth - 2};
+
     initCellGrid(&cellGrid);
     
-    displayCellGrid(&cellGrid, iteration);
-       
-    while(true) {
-        sleep(1);
+    refresh();
+    cellGrid.refresh();
+
+    while (true) {
+        mvwprintw(stdscr, 0, 0, "Iteration %d", iteration++);
+        refresh();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         cellGrid.update();
-        displayCellGrid(&cellGrid, iteration++);
     }
-    
+
+    endwin();
+
     return 0;
 }
 
