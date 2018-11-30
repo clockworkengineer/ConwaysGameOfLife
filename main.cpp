@@ -7,7 +7,7 @@
 
 #include <thread>
 #include <chrono>
-//#include <unistd.h>
+
 #include <ncurses.h>
 
 #include "CLife.hpp"
@@ -83,9 +83,40 @@ void patternToad(CLife *cellGrid, int y, int x) {
     cellGrid->setCell(y + 1, x + 2, true);
 }
 
-void initCellGrid(CLife *cellGrid) {
+void randomizeGrid(CLife *cellGrid) {
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    for (int y = 0; y < cellGrid->getCellGridHeight(); y++) {
+        for (int x = 0; x < cellGrid->getCellGridWidth(); x++) {
+            int active=rand()%2;
+            cellGrid->setCell(y, x, active);
+        }
+    }
+}
 
-    patternSpaceShip(cellGrid, 3, 2);
+void initialiseCellGrid(CLife *cellGrid) {
+
+    randomizeGrid(cellGrid);
+    refresh();
+    cellGrid->refresh();
+
+}
+
+WINDOW *createCellGridWindow() {
+
+    WINDOW *cellGridWindow;
+    int gridHeight, gridWidth;
+
+    getmaxyx(stdscr, gridHeight, gridWidth);
+    gridHeight -= 1;
+
+    cellGridWindow = newwin(gridHeight, gridWidth, 1, 0);
+    box(cellGridWindow, 0, 0);
+    curs_set(0);
+
+    return (cellGridWindow);
 
 }
 
@@ -95,26 +126,18 @@ void initCellGrid(CLife *cellGrid) {
 int main(int argc, char** argv) {
 
     WINDOW *cellGridWindow;
-    int iteration = 0;
     int gridHeight, gridWidth;
-    
+
     initscr();
 
-    getmaxyx(stdscr, gridHeight, gridWidth);
-    gridHeight -= 1;
-
-    cellGridWindow = newwin(gridHeight, gridWidth, 1, 0);
-
-    box(cellGridWindow, 0, 0);
-    curs_set(0);
+    cellGridWindow = createCellGridWindow();
+    getmaxyx(cellGridWindow, gridHeight, gridWidth);
 
     CCursesLife cellGrid{ cellGridWindow, gridHeight - 2, gridWidth - 2};
 
-    initCellGrid(&cellGrid);
-    
-    refresh();
-    cellGrid.refresh();
+    initialiseCellGrid(&cellGrid);
 
+    int iteration = 0;
     while (true) {
         mvwprintw(stdscr, 0, 0, "Iteration %d", iteration++);
         refresh();
