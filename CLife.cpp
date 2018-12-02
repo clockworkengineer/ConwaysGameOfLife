@@ -77,7 +77,7 @@ int CLife::activeCellNeighbours(int y, int x) {
 
 }
 
-void CLife::update() {
+void CLife::nextTick() {
 
     if (!m_running) {
         return;

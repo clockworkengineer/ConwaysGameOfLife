@@ -25,7 +25,7 @@ public:
     
     void setCell(int y, int x, bool active);
     bool getCell(int y, int x);
-    void update();
+    void nextTick();
 
     CLife(const CLife& orig) = delete;
     CLife(const CLife && orig) = delete;
