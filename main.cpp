@@ -7,6 +7,7 @@
 
 #include <thread>
 #include <chrono>
+#include <cstring>
 
 #include <ncurses.h>
 
@@ -38,13 +39,17 @@ public:
 
 };
 
-CCursesLife::CCursesLife(WINDOW *cellGridWindow, int cellGridHeight, int cellGridWidth) : CLife(cellGridHeight, cellGridWidth), m_cellGridWindow(cellGridWindow) {
+CCursesLife::CCursesLife(WINDOW *cellGridWindow, int cellGridHeight, int cellGridWidth) : 
+            CLife(cellGridHeight, cellGridWidth), m_cellGridWindow(cellGridWindow) {
 
 }
 
 CCursesLife::~CCursesLife() {
 
 }
+
+constexpr const char *kHeaderString { "Conways Game Of Life(%dx%d)" };
+constexpr const char *kCommandString {"1(Start) 2(Stop) 3(Reset) 4(Quit)"};
 
 void randomizeGrid(CLife *cellGrid) {
 
@@ -73,35 +78,13 @@ WINDOW *createCellGridWindow() {
     int gridHeight, gridWidth;
 
     getmaxyx(stdscr, gridHeight, gridWidth);
-
-    cellGridWindow = newwin(gridHeight, (gridWidth * 3) / 4, 0, 0);
+    gridHeight -= 2;
+    
+    cellGridWindow = newwin(gridHeight, gridWidth, 1, 0);
     box(cellGridWindow, 0, 0);
     curs_set(0);
 
     return (cellGridWindow);
-
-}
-
-WINDOW *createCommandWindow(WINDOW *cellGridWindow) {
-
-    WINDOW *commandWindow;
-    int gridHeight, gridWidth;
-
-    getmaxyx(cellGridWindow, gridHeight, gridWidth);
-
-    commandWindow = newwin(gridHeight, (gridWidth / 4) + 4, 0, gridWidth + 1);
-    box(commandWindow, 0, 0);
-    curs_set(0);
-
-    mvwprintw(commandWindow, 3, 1, "1 - Start");
-    mvwprintw(commandWindow, 4, 1, "2 - Stop");
-    mvwprintw(commandWindow, 5, 1, "3 - Reset");
-    mvwprintw(commandWindow, 6, 1, "4 - Quit");
-
-    refresh();
-    wrefresh(commandWindow);
-
-    return (commandWindow);
 
 }
 
@@ -131,7 +114,6 @@ bool processCommand(CLife *cellGrid) {
 int main(int argc, char** argv) {
 
     WINDOW *cellGridWindow;
-    WINDOW *commandWindow;
     int gridHeight, gridWidth;
 
     initscr();
@@ -139,11 +121,15 @@ int main(int argc, char** argv) {
     cellGridWindow = createCellGridWindow();
     getmaxyx(cellGridWindow, gridHeight, gridWidth);
 
-    commandWindow = createCommandWindow(cellGridWindow);
-
     noecho();
     nodelay(stdscr, true);
 
+    attron(A_REVERSE);
+    mvwprintw(stdscr, 0, ((gridWidth-strlen(kHeaderString))/2), kHeaderString, gridHeight - 2, gridWidth - 2);
+    attroff(A_REVERSE);
+    
+    mvwprintw(stdscr, gridHeight+1, gridWidth-std::strlen(kCommandString), kCommandString);
+    
     CCursesLife cellGrid{ cellGridWindow, gridHeight - 2, gridWidth - 2};
 
     initialiseCellGrid(&cellGrid);
@@ -151,8 +137,7 @@ int main(int argc, char** argv) {
     cellGrid.start();
     
     while (processCommand(&cellGrid)) {
-        mvwprintw(commandWindow, 1, 1, "Iteration: %-5d", cellGrid.getTick());
-        wrefresh(commandWindow);
+        mvwprintw(stdscr, gridHeight+1, 1, "Iteration: %-5d", cellGrid.getTick());
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         cellGrid.update();
     }
