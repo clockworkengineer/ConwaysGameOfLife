@@ -46,51 +46,14 @@ CCursesLife::~CCursesLife() {
 
 }
 
-void patternGlider(CLife *cellGrid, int y, int x) {
-
-    cellGrid->setCell(y, x, true);
-    cellGrid->setCell(y, x + 2, true);
-    cellGrid->setCell(y + 1, x + 1, true);
-    cellGrid->setCell(y + 1, x + 2, true);
-    cellGrid->setCell(y + 2, x + 1, true);
-
-}
-
-void patternSpaceShip(CLife *cellGrid, int y, int x) {
-
-    cellGrid->setCell(y, x + 1, true);
-    cellGrid->setCell(y, x + 2, true);
-    cellGrid->setCell(y + 1, x, true);
-    cellGrid->setCell(y + 1, x + 1, true);
-    cellGrid->setCell(y + 1, x + 2, true);
-    cellGrid->setCell(y + 1, x + 3, true);
-    cellGrid->setCell(y + 2, x, true);
-    cellGrid->setCell(y + 2, x + 1, true);
-    cellGrid->setCell(y + 2, x + 3, true);
-    cellGrid->setCell(y + 2, x + 4, true);
-    cellGrid->setCell(y + 3, x + 2, true);
-    cellGrid->setCell(y + 3, x + 3, true);
-
-}
-
-void patternToad(CLife *cellGrid, int y, int x) {
-
-    cellGrid->setCell(y, x + 1, true);
-    cellGrid->setCell(y, x + 2, true);
-    cellGrid->setCell(y, x + 3, true);
-    cellGrid->setCell(y + 1, x, true);
-    cellGrid->setCell(y + 1, x + 1, true);
-    cellGrid->setCell(y + 1, x + 2, true);
-}
-
 void randomizeGrid(CLife *cellGrid) {
-    
+
     time_t t;
     srand((unsigned) time(&t));
-    
+
     for (int y = 0; y < cellGrid->getCellGridHeight(); y++) {
         for (int x = 0; x < cellGrid->getCellGridWidth(); x++) {
-            int active=rand()%2;
+            int active = rand() % 2;
             cellGrid->setCell(y, x, active);
         }
     }
@@ -110,13 +73,55 @@ WINDOW *createCellGridWindow() {
     int gridHeight, gridWidth;
 
     getmaxyx(stdscr, gridHeight, gridWidth);
-    gridHeight -= 1;
 
-    cellGridWindow = newwin(gridHeight, gridWidth, 1, 0);
+    cellGridWindow = newwin(gridHeight, (gridWidth * 3) / 4, 0, 0);
     box(cellGridWindow, 0, 0);
     curs_set(0);
 
     return (cellGridWindow);
+
+}
+
+WINDOW *createCommandWindow(WINDOW *cellGridWindow) {
+
+    WINDOW *commandWindow;
+    int gridHeight, gridWidth;
+
+    getmaxyx(cellGridWindow, gridHeight, gridWidth);
+
+    commandWindow = newwin(gridHeight, (gridWidth / 4) + 4, 0, gridWidth + 1);
+    box(commandWindow, 0, 0);
+    curs_set(0);
+
+    mvwprintw(commandWindow, 3, 1, "1 - Start");
+    mvwprintw(commandWindow, 4, 1, "2 - Stop");
+    mvwprintw(commandWindow, 5, 1, "3 - Reset");
+    mvwprintw(commandWindow, 6, 1, "4 - Quit");
+
+    refresh();
+    wrefresh(commandWindow);
+
+    return (commandWindow);
+
+}
+
+bool processCommand(CLife *cellGrid) {
+
+    char key = getch();
+    if (key == '1') {
+        cellGrid->start();
+    } else if (key == '2') {
+        cellGrid->stop();
+    } else if (key == '3') {
+        cellGrid->stop();
+        randomizeGrid(cellGrid);
+        cellGrid->setTick(0);
+        cellGrid->refresh();
+    } else if (key == '4') {
+        return(false);
+    }
+
+    return (true);
 
 }
 
@@ -126,6 +131,7 @@ WINDOW *createCellGridWindow() {
 int main(int argc, char** argv) {
 
     WINDOW *cellGridWindow;
+    WINDOW *commandWindow;
     int gridHeight, gridWidth;
 
     initscr();
@@ -133,15 +139,21 @@ int main(int argc, char** argv) {
     cellGridWindow = createCellGridWindow();
     getmaxyx(cellGridWindow, gridHeight, gridWidth);
 
+    commandWindow = createCommandWindow(cellGridWindow);
+
+    noecho();
+    nodelay(stdscr, true);
+
     CCursesLife cellGrid{ cellGridWindow, gridHeight - 2, gridWidth - 2};
 
     initialiseCellGrid(&cellGrid);
 
-    int iteration = 0;
-    while (true) {
-        mvwprintw(stdscr, 0, 0, "Iteration %d", iteration++);
-        refresh();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+    cellGrid.start();
+    
+    while (processCommand(&cellGrid)) {
+        mvwprintw(commandWindow, 1, 1, "Iteration: %-5d", cellGrid.getTick());
+        wrefresh(commandWindow);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         cellGrid.update();
     }
 

@@ -79,6 +79,10 @@ int CLife::activeCellNeighbours(int y, int x) {
 
 void CLife::update() {
 
+    if (!m_running) {
+        return;
+    }
+    
     std::memcpy(m_cellGridReadOnly.get(), m_cellMasterGrid.get(), this->m_cellGridHeight * this->m_cellGridWidth);
 
     for (int y = 0; y < this->m_cellGridHeight; y++) {
@@ -95,6 +99,11 @@ void CLife::update() {
             }
         }
     }
+    
+    refresh();
+    
+    m_tick++;
+    
 }
 
 void CLife::setCell(int y, int x, bool active) {
@@ -102,6 +111,8 @@ void CLife::setCell(int y, int x, bool active) {
     auto coords = gridBounds(y, x);
 
     m_cellMasterGrid[cellIndex(coords.first, coords.second)] = active;
+    
+    updateCell(y, x, active);
 
 }
 
@@ -119,4 +130,20 @@ int CLife::getCellGridHeight() const {
 
 int CLife::getCellGridWidth() const {
     return m_cellGridWidth;
+}
+
+void CLife::setTick(int tick) {
+    m_tick = tick;
+}
+
+int CLife::getTick() const {
+    return m_tick;
+}
+
+void CLife::start() {
+     m_running = true;
+}
+
+void CLife::stop() {
+    m_running = false;
 }
