@@ -25,7 +25,7 @@
 #include <cstring>
 
 //
-// Life Cell Grid Class
+// NCurses Life Cell Grid Class
 //
 
 #include "CCursesLife.hpp"
