@@ -1,15 +1,31 @@
-/*
- * File:   CLife.cpp
- * 
- * Author: Robert Tizzard
- * 
- * Created on 25 November 2018, 10:55
- *
- * Copyright 2018.
- *
- */
+//
+// Author: Robert Tizzard
+// 
+// Class: CLife
+//
+// Description: Base class implementation of Conway's game of life a cellular automaton.
+// 
+// Dependencies: 
+// 
+// C11++ : Use of C11++ features.
+//
+// Copyright 2018.
+//
+
+// =============
+// INCLUDE FILES
+// =============
+
+//
+// C++ STL
+//
 
 #include <cstring>
+
+//
+// Life Cell Grid Class
+//
+
 #include "CLife.hpp"
 
 CLife::CLife(int cellGridHeight, int cellGridWidth) : m_cellGridHeight{cellGridHeight}, m_cellGridWidth{cellGridWidth}

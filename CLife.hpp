@@ -1,16 +1,19 @@
-/*
- * File:   CLife.hpp
- * 
- * Author: Robert Tizzard
- * 
- * Created on 25 November 2018, 10:55
- *
- * Copyright 2018.
- *
- */
-
 #ifndef CLIFE_HPP
-#define 
+#define CLIFE_HPP
+
+//
+// Author: Robert Tizzard
+// 
+// Class: CLife
+//
+// Description: Base class implementation of Conway's game of life a cellular automaton.
+// 
+// Dependencies: 
+// 
+// C11++ : Use of C11++ features.
+//
+// Copyright 2018.
+//
 
 // =============
 // INCLUDE FILES

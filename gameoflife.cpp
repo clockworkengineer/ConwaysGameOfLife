@@ -1,19 +1,10 @@
-/*
- * File:   gameoflife.cpp
- * 
- * Author: Robert Tizzard
- * 
- * Created on 25 November 2018, 10:55
- *
- * Copyright 2018.
- *
- */
-
+//
+// Author: Robert Tizzard
 //
 // Program: Conways Game Of Life.
 //
-// Description: Ncurses implementation of Conway's game of life a cellular automaton
-// details of which are found at https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life.
+// Description: Ncurses implementation of Conway's game of life a cellular automaton the
+// details of which can be  found at https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life.
 //
 // Dependencies:
 //
@@ -32,12 +23,6 @@
 #include <thread>
 #include <chrono>
 #include <cstring>
-
-//
-// ncurses
-//
-
-#include <ncurses.h>
 
 //
 // Life Cell Grid Class

@@ -1,17 +1,20 @@
-
-/*
- * File:   CCursesLife.hpp
- * 
- * Author: Robert Tizzard
- * 
- * Created on 25 November 2018, 10:55
- *
- * Copyright 2018.
- *
- */
-
 #ifndef CCURESELIFE_HPP
 #define CCURESELIFE_HPP
+
+//
+// Author: Robert Tizzard
+// 
+// Class: CCuresesLife
+//
+// Description: Display Game of Life cell grid updates in an ncurses Text Window.
+// 
+// Dependencies: 
+// 
+// NCurses  : Displaying of cell grid.
+// C11++    : Use of C11++ features.
+//
+// Copyright 2018.
+//
 
 // =============
 // INCLUDE FILES
