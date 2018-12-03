@@ -11,6 +11,8 @@
 // C11++              : Use of C11++ features.
 // ncurses            : Text terminal display
 //
+// Copyright 2018.
+//
 
 // =============
 // INCLUDE FILES
@@ -133,7 +135,7 @@ int main(int argc, char** argv) {
     refresh();
     cellGrid.refresh();
 
-    // Loop displaying life game until quit
+    // Loop displaying current cell grid state until quit
     
     cellGrid.start();
     while (processNextTick(&cellGrid)) {

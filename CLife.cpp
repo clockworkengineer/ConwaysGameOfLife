@@ -28,6 +28,10 @@
 
 #include "CLife.hpp"
 
+//
+// Reserve Memory for cell grid and runtime copy.
+//
+
 CLife::CLife(int cellGridHeight, int cellGridWidth) : m_cellGridHeight{cellGridHeight}, m_cellGridWidth{cellGridWidth}
 {
     m_cellMasterGrid.reset(new std::uint8_t [m_cellGridWidth * m_cellGridHeight]);
@@ -36,6 +40,10 @@ CLife::CLife(int cellGridHeight, int cellGridWidth) : m_cellGridHeight{cellGridH
 
 CLife::~CLife() {
 }
+
+//
+// Wrap around X,Y coordinates to cell grid .
+//
 
 std::pair<int, int> CLife::gridBounds(int y, int x) {
     
@@ -55,6 +63,10 @@ std::pair<int, int> CLife::gridBounds(int y, int x) {
     
 }
 
+//
+// Return true if a cell is active.
+//
+
 bool CLife::isCellActive(int y, int x) {
 
     auto coords = gridBounds(y, x);
@@ -62,6 +74,10 @@ bool CLife::isCellActive(int y, int x) {
     return (m_cellGridReadOnly[cellIndex(coords.first, coords.second)]);
 
 }
+
+//
+// Determine the number of active neighbours a cell has around it.
+//
 
 int CLife::activeCellNeighbours(int y, int x) {
     
@@ -96,6 +112,11 @@ int CLife::activeCellNeighbours(int y, int x) {
 
 }
 
+//
+// Update cell grid using readonly copy as a source and change any visual
+// representation through refresh.
+//
+
 void CLife::nextTick() {
 
     if (!m_running) {
@@ -125,6 +146,11 @@ void CLife::nextTick() {
     
 }
 
+//
+// Change Cells state (true==active, false==dead) and update any external 
+// representation.
+//
+
 void CLife::setCell(int y, int x, bool active) {
 
     auto coords = gridBounds(y, x);
@@ -135,6 +161,10 @@ void CLife::setCell(int y, int x, bool active) {
 
 }
 
+//
+// Get cells current state (true==active, false==dead).
+//
+
 bool CLife::getCell(int y, int x) {
 
     auto coords = gridBounds(y, x);
@@ -142,6 +172,26 @@ bool CLife::getCell(int y, int x) {
     return (m_cellMasterGrid[cellIndex(coords.first, coords.second)]);
     
 }
+
+//
+// Start cell grid updates
+//
+
+void CLife::start() {
+     m_running = true;
+}
+
+//
+// Stop cell grid updates.
+//
+
+void CLife::stop() {
+    m_running = false;
+}
+
+//
+// Getter/Setter methods.
+//
 
 int CLife::getCellGridHeight() const {
     return m_cellGridHeight;
@@ -157,12 +207,4 @@ void CLife::setTick(int tick) {
 
 int CLife::getTick() const {
     return m_tick;
-}
-
-void CLife::start() {
-     m_running = true;
-}
-
-void CLife::stop() {
-    m_running = false;
 }
