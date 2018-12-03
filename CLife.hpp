@@ -1,12 +1,24 @@
-/* 
+/*
  * File:   CLife.hpp
- * Author: robt
+ * 
+ * Author: Robert Tizzard
+ * 
+ * Created on 25 November 2018, 10:55
  *
- * Created on 27 November 2018, 13:57
+ * Copyright 2018.
+ *
  */
 
 #ifndef CLIFE_HPP
-#define CLIFE_HPP
+#define 
+
+// =============
+// INCLUDE FILES
+// =============
+
+//
+// C++ STL
+//
 
 #include <memory>
 #include <utility>

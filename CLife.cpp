@@ -1,10 +1,13 @@
-/* 
+/*
  * File:   CLife.cpp
- * Author: robt
  * 
- * Created on 27 November 2018, 13:57
+ * Author: Robert Tizzard
+ * 
+ * Created on 25 November 2018, 10:55
+ *
+ * Copyright 2018.
+ *
  */
-
 
 #include <cstring>
 #include "CLife.hpp"
