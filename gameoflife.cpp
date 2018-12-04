@@ -45,9 +45,6 @@ constexpr const char *kCommandString{"1(Start) 2(Stop) 3(Reset) 4(Quit)"};
 
 void randomizeGrid(CLife *cellGrid) {
 
-    time_t t;
-    srand((unsigned) time(&t));
-
     for (int y = 0; y < cellGrid->getCellGridHeight(); y++) {
         for (int x = 0; x < cellGrid->getCellGridWidth(); x++) {
             int active = rand() % 2;
@@ -111,6 +108,10 @@ bool processNextTick(CLife *cellGrid) {
 
 int main(int argc, char** argv) {
 
+    // Seed for random number generation
+    
+    srand( (unsigned)time( NULL ) );
+    
     // Initialise ncurses and get cell grid window dimensions
     
     initscr();

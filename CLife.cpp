@@ -112,14 +112,14 @@ int CLife::activeCellNeighbours(int y, int x) {
 
 }
 
-//
-// Update cell grid using readonly copy as a source and change any visual
-// representation through refresh.
+// 
+// Implementation of conway's cellular automaton.Update cell grid using readonly
+// copy as a source and change any visual representation through refresh.
 //
 
 void CLife::nextTick() {
 
-    if (!m_running) {
+    if (!m_running) {   // Return if not started.
         return;
     }
     
