@@ -32,7 +32,7 @@
 // Reserve Memory for cell grid and runtime copy.
 //
 
-CLife::CLife(int cellGridHeight, int cellGridWidth) : m_cellGridHeight{cellGridHeight}, m_cellGridWidth{cellGridWidth}
+CLife::CLife(int cellGridHeight, int cellGridWidth) : m_cellGridWidth{cellGridWidth}, m_cellGridHeight{cellGridHeight}
 {
     m_cellMasterGrid.reset(new std::uint8_t [m_cellGridWidth * m_cellGridHeight]);
     m_cellGridReadOnly.reset(new std::uint8_t [m_cellGridWidth * m_cellGridHeight]);
